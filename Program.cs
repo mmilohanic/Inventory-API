@@ -23,4 +23,23 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.MapControllers();
+
+// Trying to connect to SQL Server until isn't up and ready (up to 1min)
+var retryCount = 0;
+while (retryCount < 20)
+{
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+        break;
+    }
+    catch (Exception)
+    {
+        retryCount++;
+        Thread.Sleep(3000);
+    }
+}
+
 app.Run();
