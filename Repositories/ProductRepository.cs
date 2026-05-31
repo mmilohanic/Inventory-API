@@ -30,13 +30,9 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteProductAsync(int id)
+    public async Task DeleteProductAsync(Product product)
     {
-        var product = await _context.Products.FindAsync(id);
-        if (product != null)
-        {
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-        }
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
     }
 }
